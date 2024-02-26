@@ -233,7 +233,11 @@ require('lazy').setup({
   --    require('Comment').setup({})
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
+  { 'numToStr/Comment.nvim', lazy = false, opts = {
+    padding = true,
+    sticky = true,
+    ignore = nil,
+  } },
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following lua:
@@ -616,11 +620,14 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
+        python = { 'isort', 'black' },
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
-        -- javascript = { { "prettierd", "prettier" } },
+        javascript = { { 'prettierd', 'prettier' } },
+        typescript = { { 'prettierd', 'prettier', 'eslint' } },
+        typescriptreact = { { 'prettierd', 'prettier', 'eslint' } },
+        css = { 'prettierd', 'prettier' },
       },
     },
   },
@@ -718,23 +725,6 @@ require('lazy').setup({
     end,
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`
-    'folke/tokyonight.nvim',
-    lazy = false, -- make sure we load this during startup if it is your main colorscheme
-    priority = 1000, -- make sure to load this before all the other start plugins
-    config = function()
-      -- Load the colorscheme here
-      vim.cmd.colorscheme 'tokyonight-night'
-
-      -- You can configure highlights by doing something like
-      vim.cmd.hi 'Comment gui=none'
-    end,
-  },
-
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
@@ -808,6 +798,43 @@ require('lazy').setup({
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information see: :help lazy.nvim-lazy.nvim-structuring-your-plugins
   -- { import = 'custom.plugins' },
+
+  {
+    'catppuccin/nvim',
+    priority = 1000,
+    lazy = false,
+    config = function()
+      require('catppuccin').setup {
+        flavour = 'mocha',
+        no_italic = true,
+      }
+      require('catppuccin').load()
+    end,
+  },
+
+  { 'github/copilot.vim' },
+
+  {
+    'elentok/format-on-save.nvim',
+    config = function()
+      local format_on_save = require 'format-on-save'
+      local formatters = require 'format-on-save.formatters'
+
+      format_on_save.setup {
+        exclude_path_patterns = {
+          '/node_modules/',
+          '.local/share/nvim/lazy',
+        },
+        formatter_by_ft = {
+          css = formatters.lsp,
+          html = formatters.lsp,
+          python = formatters.black,
+          typescript = formatters.prettierd,
+          typescriptreact = formatters.prettierd,
+        },
+      }
+    end,
+  },
 }, {})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
