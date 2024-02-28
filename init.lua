@@ -255,6 +255,13 @@ require('lazy').setup({
         changedelete = { text = '~' },
       },
     },
+    config = function()
+      require('gitsigns').setup()
+
+      vim.keymap.set('n', '<leader>gp', '<cmd>lua require"gitsigns".preview_hunk()<CR>', { desc = 'Preview [H]unk' })
+      vim.keymap.set('n', '<leader>gr', '<cmd>lua require"gitsigns".reset_hunk()<CR>', { desc = '[R]eset [H]unk' })
+      vim.keymap.set('n', '<leader>gb', '<cmd>lua require"gitsigns".toggle_current_line_blame()<CR>', { desc = 'Toggle [B]lame' })
+    end,
   },
 
   -- NOTE: Plugins can also be configured to run lua code when they are loaded.
@@ -798,6 +805,10 @@ require('lazy').setup({
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information see: :help lazy.nvim-lazy.nvim-structuring-your-plugins
   -- { import = 'custom.plugins' },
+
+  { 'xiyaowong/transparent.nvim' },
+
+  { 'tpope/vim-fugitive' },
 
   {
     'catppuccin/nvim',
