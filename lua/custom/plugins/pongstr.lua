@@ -108,6 +108,32 @@ return {
       '3rd/image.nvim',
     },
     config = function()
+      require('neo-tree').setup {
+        open_on_setup = true,
+        auto_close = true,
+        filesystem = {
+          filtered_items = {
+            hide_dotfiles = false,
+            hide_gitignored = true,
+            hide_by_name = {
+              'node_modules',
+              '.local',
+              '.cache',
+              '.git',
+              '.DS_Store',
+              '.Trash',
+              '__pycache__',
+              '.fseventsd',
+              '.Spotlight-V100',
+              '.TemporaryItems',
+              '.VolumeIcon.icns',
+              '.DocumentRevisions-V100',
+              '.com.apple.timemachine.supported',
+            },
+            never_show = { '.git' },
+          },
+        },
+      }
       local tree = require 'neo-tree.command'
       local map = function(key, cmd, opts)
         vim.keymap.set('n', key, cmd, opts)
