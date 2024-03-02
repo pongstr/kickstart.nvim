@@ -207,6 +207,9 @@ if not vim.loop.fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
+-- Toggle relative line numbers
+vim.api.nvim_set_keymap('n', '<leader>ln', ':set relativenumber!<CR>', { noremap = true, silent = true })
+
 -- [[ Configure and install plugins ]]
 --
 --  To check the current status of your plugins, run
@@ -634,9 +637,9 @@ require('lazy').setup({
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
         javascript = { { 'prettierd', 'prettier' } },
-        typescript = { { 'prettierd', 'prettier', 'eslint' } },
-        typescriptreact = { { 'prettierd', 'prettier', 'eslint' } },
-        css = { 'prettierd', 'prettier' },
+        typescript = { { 'prettierd', 'prettier' } },
+        typescriptreact = { { 'prettierd', 'prettier' } },
+        css = { 'prettierd', 'prettier', 'tailwindcss' },
       },
     },
   },
@@ -813,14 +816,57 @@ require('lazy').setup({
   { 'kdheepak/lazygit.nvim' },
 
   {
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = 'v3.x',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons',
+      'MunifTanjim/nui.nvim',
+      '3rd/image.nvim',
+    },
+
+    keys = {
+      {
+        '<leader>fe',
+        function()
+          require('neo-tree.command').execute { toggle = true }
+        end,
+        desc = 'Explorer NeoTree (root dir)',
+      },
+      {
+        '<leader>fE',
+        function()
+          require('neo-tree.command').execute { toggle = true, dir = vim.loop.cwd() }
+        end,
+        desc = 'Explorer NeoTree (cwd)',
+      },
+      { '<leader>e', '<leader>fe', desc = 'Explorer NeoTree (root dir)', remap = true },
+      { '<leader>E', '<leader>fE', desc = 'Explorer NeoTree (cwd)', remap = true },
+      {
+        '<leader>ge',
+        function()
+          require('neo-tree.command').execute { source = 'git_status', toggle = true }
+        end,
+        desc = 'Git explorer',
+      },
+      {
+        '<leader>be',
+        function()
+          require('neo-tree.command').execute { source = 'buffers', toggle = true }
+        end,
+        desc = 'Buffer explorer',
+      },
+    },
+  },
+
+  {
     'catppuccin/nvim',
     priority = 1000,
-    lazy = false,
     config = function()
       require('catppuccin').setup {
         flavour = 'mocha',
         no_italic = true,
-        transparent = true,
+        transparent_background = true,
       }
       require('catppuccin').load()
     end,
