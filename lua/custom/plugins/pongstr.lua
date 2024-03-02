@@ -1,6 +1,6 @@
 -- You can add your own plugins here or in other files in this directory!
 --  I promise not to create any merge conflicts in this directory :)
-
+--
 -- See the kickstart.nvim README for more information
 --
 
@@ -62,14 +62,16 @@ return {
       },
     },
     config = function()
+      require('gitsigns').setup()
+
       local map = function(key, cmd, opts)
         vim.keymap.set('n', key, cmd, opts)
       end
 
-      map('<leader>gp', '<cmd>lua require"gitsigns".preview_hunk()<CR>', { desc = 'Gitsign: Preview [H]unk' })
-      map('<leader>gR', '<cmd>lua require"gitsigns".reset_hunk()<CR>', { desc = 'Gitsign: [R]eset Hunk' })
-      map('<leader>gS', '<cmd>lua require"gitsigns".stage_buffer()<CR>', { desc = 'Gitsign: [S]tage Buffer' })
-      map('<leader>gU', '<cmd>lua require"gitsigns".reset_buffer_index()<CR>', { desc = 'Gitsign: Reset B[u]ffer Index' })
+      map('<leader>pg', '<cmd>lua require"gitsigns".preview_hunk()<CR>', { desc = 'Gitsign: Preview [H]unk' })
+      map('<leader>pR', '<cmd>lua require"gitsigns".reset_hunk()<CR>', { desc = 'Gitsign: [R]eset Hunk' })
+      map('<leader>pS', '<cmd>lua require"gitsigns".stage_buffer()<CR>', { desc = 'Gitsign: [S]tage Buffer' })
+      map('<leader>px', '<cmd>lua require"gitsigns".reset_buffer_index()<CR>', { desc = 'Gitsign: Reset B[u]ffer Index' })
     end,
   },
 
