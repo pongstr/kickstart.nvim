@@ -12,7 +12,7 @@
 ========         ||                    ||   |-----|          ========
 ========         ||:Tutor              ||   |:::::|          ========
 ========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
+g=======         `"")----------------(""`   ___________      ========
 ========        /::::::::::|  |::::::::::\  \ no mouse \     ========
 ========       /:::========|  |==hjkl==:::\  \ required \    ========
 ========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
@@ -207,9 +207,6 @@ if not vim.loop.fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
--- Toggle relative line numbers
-vim.api.nvim_set_keymap('n', '<leader>ln', ':set relativenumber!<CR>', { noremap = true, silent = true })
-
 -- [[ Configure and install plugins ]]
 --
 --  To check the current status of your plugins, run
@@ -225,6 +222,8 @@ require('lazy').setup({
 
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  'tpope/vim-fugitive', -- Git commands in Neovim
+  'github/copilot.vim',
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
@@ -235,37 +234,10 @@ require('lazy').setup({
   --  This is equivalent to:
   --    require('Comment').setup({})
 
-  -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', lazy = false, opts = {
-    padding = true,
-    sticky = true,
-    ignore = nil,
-  } },
-
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following lua:
   --    require('gitsigns').setup({ ... })
   --
-  -- See `:help gitsigns` to understand what the configuration keys do
-  { -- Adds git related signs to the gutter, as well as utilities for managing changes
-    'lewis6991/gitsigns.nvim',
-    opts = {
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
-    },
-    config = function()
-      require('gitsigns').setup()
-
-      vim.keymap.set('n', '<leader>gp', '<cmd>lua require"gitsigns".preview_hunk()<CR>', { desc = 'Preview [H]unk' })
-      vim.keymap.set('n', '<leader>gr', '<cmd>lua require"gitsigns".reset_hunk()<CR>', { desc = '[R]eset [H]unk' })
-      vim.keymap.set('n', '<leader>gb', '<cmd>lua require"gitsigns".toggle_current_line_blame()<CR>', { desc = 'Toggle [B]lame' })
-    end,
-  },
 
   -- NOTE: Plugins can also be configured to run lua code when they are loaded.
   --
@@ -388,7 +360,6 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-      vim.keymap.set('n', '<leader>u', ':Telescope undo<Return>', { desc = '[U]ndo List' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -621,29 +592,6 @@ require('lazy').setup({
     end,
   },
 
-  { -- Autoformat
-    'stevearc/conform.nvim',
-    opts = {
-      notify_on_error = false,
-      format_on_save = {
-        timeout_ms = 500,
-        lsp_fallback = true,
-      },
-      formatters_by_ft = {
-        lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        python = { 'isort', 'black' },
-        --
-        -- You can use a sub-list to tell conform to run *until* a formatter
-        -- is found.
-        javascript = { { 'prettierd', 'prettier' } },
-        typescript = { { 'prettierd', 'prettier' } },
-        typescriptreact = { { 'prettierd', 'prettier' } },
-        css = { 'prettierd', 'prettier', 'tailwindcss' },
-      },
-    },
-  },
-
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
@@ -801,100 +749,16 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.indent_line',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information see: :help lazy.nvim-lazy.nvim-structuring-your-plugins
-  -- { import = 'custom.plugins' },
-
-  { 'tpope/vim-fugitive' },
-
-  { 'kdheepak/lazygit.nvim' },
-
-  {
-    'nvim-neo-tree/neo-tree.nvim',
-    branch = 'v3.x',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-tree/nvim-web-devicons',
-      'MunifTanjim/nui.nvim',
-      '3rd/image.nvim',
-    },
-
-    keys = {
-      {
-        '<leader>fe',
-        function()
-          require('neo-tree.command').execute { toggle = true }
-        end,
-        desc = 'Explorer NeoTree (root dir)',
-      },
-      {
-        '<leader>fE',
-        function()
-          require('neo-tree.command').execute { toggle = true, dir = vim.loop.cwd() }
-        end,
-        desc = 'Explorer NeoTree (cwd)',
-      },
-      { '<leader>e', '<leader>fe', desc = 'Explorer NeoTree (root dir)', remap = true },
-      { '<leader>E', '<leader>fE', desc = 'Explorer NeoTree (cwd)', remap = true },
-      {
-        '<leader>ge',
-        function()
-          require('neo-tree.command').execute { source = 'git_status', toggle = true }
-        end,
-        desc = 'Git explorer',
-      },
-      {
-        '<leader>be',
-        function()
-          require('neo-tree.command').execute { source = 'buffers', toggle = true }
-        end,
-        desc = 'Buffer explorer',
-      },
-    },
-  },
-
-  {
-    'catppuccin/nvim',
-    priority = 1000,
-    config = function()
-      require('catppuccin').setup {
-        flavour = 'mocha',
-        no_italic = true,
-        transparent_background = true,
-      }
-      require('catppuccin').load()
-    end,
-  },
-
-  { 'github/copilot.vim' },
-
-  {
-    'elentok/format-on-save.nvim',
-    config = function()
-      local format_on_save = require 'format-on-save'
-      local formatters = require 'format-on-save.formatters'
-
-      format_on_save.setup {
-        exclude_path_patterns = {
-          '/node_modules/',
-          '.local/share/nvim/lazy',
-        },
-        formatter_by_ft = {
-          css = formatters.lsp,
-          html = formatters.lsp,
-          python = formatters.black,
-          typescript = formatters.prettierd,
-          typescriptreact = formatters.prettierd,
-        },
-      }
-    end,
-  },
+  { import = 'custom.plugins.pongstr' },
+  { import = 'custom.plugins.keymaps' },
 }, {})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
