@@ -109,26 +109,14 @@ return {
     },
     config = function()
       require('neo-tree').setup {
-        open_on_setup = true,
-        auto_close = true,
         filesystem = {
           filtered_items = {
             hide_dotfiles = false,
-            hide_gitignored = true,
+            hide_gitignored = false,
             hide_by_name = {
-              'node_modules',
-              '.local',
-              '.cache',
               '.git',
-              '.DS_Store',
-              '.Trash',
+              'node_modules',
               '__pycache__',
-              '.fseventsd',
-              '.Spotlight-V100',
-              '.TemporaryItems',
-              '.VolumeIcon.icns',
-              '.DocumentRevisions-V100',
-              '.com.apple.timemachine.supported',
             },
             never_show = { '.git' },
           },
