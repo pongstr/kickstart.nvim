@@ -38,7 +38,23 @@ return {
       -- online, please don't ask me how to install them :)
       ensure_installed = {
         -- Update this to ensure that you have the debuggers for the langs you want
+        'black',
+        'css-lsp',
         'delve',
+        'eslint_d',
+        'html-lsp',
+        'html-beautifier',
+        'json-lsp',
+        'lua-language-server',
+        'prettier',
+        'prettierd',
+        'python-lsp-server',
+        'style-lua',
+        'svelte-language-server',
+        'sqls',
+        'tailwindcss-language-server',
+        'typescript-language-server',
+        'vetur-vls',
       },
     }
 

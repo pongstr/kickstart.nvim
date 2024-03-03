@@ -12,7 +12,7 @@
 ========         ||                    ||   |-----|          ========
 ========         ||:Tutor              ||   |:::::|          ========
 ========         |'-..................-'|   |____o|          ========
-g=======         `"")----------------(""`   ___________      ========
+========         `"")----------------(""`   ___________      ========
 ========        /::::::::::|  |::::::::::\  \ no mouse \     ========
 ========       /:::========|  |==hjkl==:::\  \ required \    ========
 ========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
@@ -218,8 +218,7 @@ vim.opt.rtp:prepend(lazypath)
 --    :Lazy update
 --
 -- NOTE: Here is where you install your plugins.
-require('lazy').setup({
-
+require('lazy').setup {
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-fugitive', -- Git commands in Neovim
@@ -234,10 +233,42 @@ require('lazy').setup({
   --  This is equivalent to:
   --    require('Comment').setup({})
 
+  -- "gc" to comment visual regions/lines
+  { 'numToStr/Comment.nvim', lazy = false, opts = {
+    padding = true,
+    sticky = true,
+    ignore = nil,
+  } },
+
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following lua:
   --    require('gitsigns').setup({ ... })
   --
+  -- See `:help gitsigns` to understand what the configuration keys do
+  { -- Adds git related signs to the gutter, as well as utilities for managing changes
+    'lewis6991/gitsigns.nvim',
+    opts = {
+      signs = {
+        add = { text = '+' },
+        change = { text = '~' },
+        delete = { text = '_' },
+        topdelete = { text = '‾' },
+        changedelete = { text = '~' },
+      },
+    },
+    config = function()
+      require('gitsigns').setup()
+
+      local map = function(key, cmd, opts)
+        vim.keymap.set('n', key, cmd, opts)
+      end
+
+      map('<leader>pg', '<cmd>lua require"gitsigns".preview_hunk()<CR>', { desc = 'Gitsign: Preview [H]unk' })
+      map('<leader>pR', '<cmd>lua require"gitsigns".reset_hunk()<CR>', { desc = 'Gitsign: [R]eset Hunk' })
+      map('<leader>pS', '<cmd>lua require"gitsigns".stage_buffer()<CR>', { desc = 'Gitsign: [S]tage Buffer' })
+      map('<leader>px', '<cmd>lua require"gitsigns".reset_buffer_index()<CR>', { desc = 'Gitsign: Reset B[u]ffer Index' })
+    end,
+  },
 
   -- NOTE: Plugins can also be configured to run lua code when they are loaded.
   --
@@ -245,9 +276,9 @@ require('lazy').setup({
   -- lazy loading plugins that don't need to be loaded immediately at startup.
   --
   -- For example, in the following configuration, we use:
-  --  event = 'VeryLazy'
+  --  event = 'VimEnter'
   --
-  -- which loads which-key after all the UI elements are loaded. Events can be
+  -- which loads which-key before all the UI elements are loaded. Events can be
   -- normal autocommands events (`:help autocmd-events`).
   --
   -- Then, because we use the `config` key, the configuration only runs
@@ -256,7 +287,7 @@ require('lazy').setup({
 
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
-    event = 'VeryLazy', -- Sets the loading event to 'VeryLazy'
+    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     config = function() -- This is the function that runs, AFTER loading
       require('which-key').setup()
 
@@ -280,11 +311,10 @@ require('lazy').setup({
 
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
-    event = 'VeryLazy',
+    event = 'VimEnter',
     branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
-      'debugloop/telescope-undo.nvim',
       { -- If encountering errors, see telescope-fzf-native README for install instructions
         'nvim-telescope/telescope-fzf-native.nvim',
 
@@ -343,6 +373,7 @@ require('lazy').setup({
           },
         },
       }
+
       -- Enable telescope extensions, if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
@@ -360,6 +391,8 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+      vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -368,7 +401,7 @@ require('lazy').setup({
           winblend = 10,
           previewer = false,
         })
-      end, { desc = '[/] Fuzzy search in current buffer' })
+      end, { desc = '[/] Fuzzily search in current buffer' })
 
       -- Also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
@@ -550,6 +583,9 @@ require('lazy').setup({
                 -- If lua_ls is really slow on your computer, you can try this instead:
                 -- library = { vim.env.VIMRUNTIME },
               },
+              completion = {
+                callSnippet = 'Replace',
+              },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
               -- diagnostics = { disable = { 'missing-fields' } },
             },
@@ -577,19 +613,38 @@ require('lazy').setup({
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
-            require('lspconfig')[server_name].setup {
-              cmd = server.cmd,
-              settings = server.settings,
-              filetypes = server.filetypes,
-              -- This handles overriding only values explicitly passed
-              -- by the server configuration above. Useful when disabling
-              -- certain features of an LSP (for example, turning off formatting for tsserver)
-              capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {}),
-            }
+            -- This handles overriding only values explicitly passed
+            -- by the server configuration above. Useful when disabling
+            -- certain features of an LSP (for example, turning off formatting for tsserver)
+            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+            require('lspconfig')[server_name].setup(server)
           end,
         },
       }
     end,
+  },
+
+  { -- Autoformat: Format code on save
+    'stevearc/conform.nvim',
+    opts = {
+      notify_on_error = false,
+      format_on_save = {
+        timeout_ms = 500,
+        lsp_fallback = true,
+      },
+      formatters_by_ft = {
+        lua = { 'stylua' },
+        -- Conform can also run multiple formatters sequentially
+        python = { 'isort', 'black' },
+        --
+        -- You can use a sub-list to tell conform to run *until* a formatter
+        -- is found.
+        javascript = { { 'prettierd', 'prettier' } },
+        typescript = { { 'prettierd', 'prettier' } },
+        typescriptreact = { { 'prettierd', 'prettier' } },
+        css = { 'prettierd', 'prettier' },
+      },
+    },
   },
 
   { -- Autocompletion
@@ -685,8 +740,55 @@ require('lazy').setup({
     end,
   },
 
+  { -- You can easily change to a different colorscheme.
+    -- Change the name of the colorscheme plugin below, and then
+    -- change the command in the config to whatever the name of that colorscheme is
+    --
+    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`
+    'folke/tokyonight.nvim',
+    lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    priority = 1000, -- make sure to load this before all the other start plugins
+    config = function()
+      -- Load the colorscheme here
+      vim.cmd.colorscheme 'tokyonight-night'
+
+      -- You can configure highlights by doing something like
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+
+  -- {
+  --   'catppuccin/nvim',
+  --   name = 'catppuccin',
+  --   priority = 1000,
+  --   config = function()
+  --     require('catppuccin').setup {
+  --       flavour = 'mocha',
+  --       transparent_background = false,
+  --       no_italic = false,
+  --       no_underline = true,
+  --       styles = {
+  --         comments = { 'italic' },
+  --         conditionals = {},
+  --         loops = {},
+  --         functions = {},
+  --         keywords = {},
+  --         strings = {},
+  --         variables = {},
+  --         numbers = {},
+  --         booleans = {},
+  --         properties = {},
+  --         types = {},
+  --         operators = {},
+  --       },
+  --     }
+  --
+  --     vim.cmd.colorscheme 'catppuccin-mocha'
+  --   end,
+  -- },
+
   -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
@@ -752,6 +854,20 @@ require('lazy').setup({
       -- Pair matching
       require('mini.pairs').setup()
 
+      -- Simple and easy statusline.
+      --  You could remove this setup call if you don't like it,
+      --  and try some other statusline plugin
+      local statusline = require 'mini.statusline'
+      statusline.setup()
+
+      -- You can configure sections in the statusline by overriding their
+      -- default behavior. For example, here we disable the section for
+      -- cursor information because line numbers are already enabled
+      ---@diagnostic disable-next-line: duplicate-set-field
+      statusline.section_location = function()
+        return ''
+      end
+
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
@@ -797,10 +913,10 @@ require('lazy').setup({
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  --    For additional information see: :help lazy.nvim-lazy.nvim-structuring-your-plugins
+  --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   { import = 'custom.plugins.pongstr' },
   { import = 'custom.plugins.keymaps' },
-}, {})
+}
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
