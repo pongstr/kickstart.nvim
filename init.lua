@@ -263,10 +263,10 @@ require('lazy').setup {
         vim.keymap.set('n', key, cmd, opts)
       end
 
-      map('<leader>pg', '<cmd>lua require"gitsigns".preview_hunk()<CR>', { desc = 'Gitsign: Preview [H]unk' })
-      map('<leader>pR', '<cmd>lua require"gitsigns".reset_hunk()<CR>', { desc = 'Gitsign: [R]eset Hunk' })
-      map('<leader>pS', '<cmd>lua require"gitsigns".stage_buffer()<CR>', { desc = 'Gitsign: [S]tage Buffer' })
-      map('<leader>px', '<cmd>lua require"gitsigns".reset_buffer_index()<CR>', { desc = 'Gitsign: Reset B[u]ffer Index' })
+      map('<leader>gp', '<cmd>lua require"gitsigns".preview_hunk()<CR>', { desc = 'Gitsign: [P]review Hunk' })
+      map('<leader>gR', '<cmd>lua require"gitsigns".reset_hunk()<CR>', { desc = 'Gitsign: [R]eset Hunk' })
+      map('<leader>gS', '<cmd>lua require"gitsigns".stage_buffer()<CR>', { desc = 'Gitsign: [S]tage Buffer' })
+      map('<leader>gx', '<cmd>lua require"gitsigns".reset_buffer_index()<CR>', { desc = 'Gitsign: Reset Buffer Inde[x]' })
     end,
   },
 
