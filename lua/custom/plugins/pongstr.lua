@@ -103,4 +103,33 @@ return {
       map('<leader>E', '<leader>fE', { desc = 'Explorer NeoTree (cwd)', remap = true })
     end,
   },
+
+  {
+    'WhoIsSethDaniel/mason-tool-installer',
+    config = function()
+      require('mason-tool-installer').setup {
+        ensure_installed = {
+          { 'black', auto_update = true },
+          { 'cssls', auto_update = true },
+          { 'delve', auto_update = true },
+          { 'denols', auto_update = true },
+          { 'eslint', auto_update = true },
+          { 'html', auto_update = true },
+          { 'htmlbeautifier', auto_update = true },
+          { 'jsonls', auto_update = true },
+          { 'luau_lsp', auto_update = true },
+          { 'isort', auto_update = true },
+          { 'prettier', auto_update = true },
+          { 'pylsp', auto_update = true },
+          { 'stylelua', auto_update = true },
+          { 'svelte', auto_update = true },
+          { 'sqls', auto_update = true },
+          { 'tailwindcss', auto_update = true },
+          { 'typosls', auto_update = true },
+          { 'tsserver', auto_update = true },
+          { 'vuels', auto_update = true },
+        },
+      }
+    end,
+  },
 }
