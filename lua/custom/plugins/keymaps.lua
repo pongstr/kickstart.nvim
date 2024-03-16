@@ -22,4 +22,6 @@ vim.keymap.set('n', '<leader>wb', ':MoveWord(-1)<CR>', opts)
 vim.keymap.set('v', '<C-j>', ':MoveBlock(1)<CR>', opts)
 vim.keymap.set('v', '<C-k>', ':MoveBlock(-1)<CR>', opts)
 
+vim.keymap.set('n', '<M-s>', ':help')
+
 return {}

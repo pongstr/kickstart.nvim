@@ -565,6 +565,31 @@ require('lazy').setup {
         tsserver = {},
         --
 
+        tailwindcss = {},
+
+        cssls = {
+          settings = {
+            css = {
+              validate = true,
+              lint = {
+                unknownAtRules = 'ignore',
+              },
+            },
+            scss = {
+              validate = true,
+              lint = {
+                unknownAtRules = 'ignore',
+              },
+            },
+            less = {
+              validate = true,
+              lint = {
+                unknownAtRules = 'ignore',
+              },
+            },
+          },
+        },
+
         lua_ls = {
           -- cmd = {...},
           -- filetypes { ...},
@@ -750,6 +775,7 @@ require('lazy').setup {
     priority = 1000, -- make sure to load this before all the other start plugins
     config = function()
       require('tokyonight').setup {
+        transparent = true,
         styles = {
           conditionals = {},
           loops = {},
