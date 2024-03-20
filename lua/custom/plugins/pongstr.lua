@@ -105,34 +105,6 @@ return {
   },
 
   {
-    'WhoIsSethDaniel/mason-tool-installer',
-    config = function()
-      require('mason-tool-installer').setup {
-        ensure_installed = {
-          { 'black' },
-          { 'cssls' },
-          { 'eslint' },
-          { 'html' },
-          { 'jsonls' },
-          { 'luau_lsp' },
-          { 'prettier' },
-          { 'prettierd' },
-          { 'pylsp' },
-          { 'stylua' },
-          { 'sqls' },
-          { 'tailwindcss' },
-          { 'tsserver' },
-          -- { 'denols' },
-          -- { 'htmlbeautifier' },
-          -- { 'isort' },
-          -- { 'svelte' },
-          -- { 'vuels' },
-        },
-      }
-    end,
-  },
-
-  {
     'folke/noice.nvim',
     event = 'VeryLazy',
     opts = {
