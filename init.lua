@@ -850,6 +850,7 @@ require('lazy').setup({
   require 'kickstart.plugins.lint',
   require 'custom.plugins.pongstr',
   require 'custom.plugins.keymaps',
+  require 'custom.plugins.lualine',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
