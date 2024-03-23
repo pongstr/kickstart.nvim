@@ -13,6 +13,12 @@ return {
     end,
   },
 
+  {
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    config = true,
+  },
+
   { -- LazyGit
     'kdheepak/lazygit.nvim',
     cmd = {

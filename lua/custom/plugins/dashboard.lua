@@ -13,8 +13,8 @@ return {
       ➖🟧➖🟨🟧🟧🟧
       ➖🟧🟨🟧🟨🟧🟨
       ➖➖🟨🟧🟫🟫🟧
-      ➖➖      pongstr.nvim
-        ]]
+      ➖➖  pongstr.nvim
+    ]]
 
         logo = string.rep('\n', 8) .. logo .. '\n\n'
 
@@ -33,8 +33,8 @@ return {
               { action = 'ene | startinsert', desc = ' New file', icon = ' ', key = 'n' },
               { action = 'Telescope find_files', desc = ' Find file', icon = ' ', key = 'f' },
               { action = 'Telescope oldfiles', desc = ' Recent files', icon = ' ', key = 'r' },
-              { action = 'Telescope live_grep', desc = ' Find text', icon = ' ', key = 'g' },
-              { action = 'LazyGit', desc = ' Lazy Git', icon = '󰒲 ', key = 'l' },
+              { action = 'Telescope live_grep', desc = ' Find text', icon = ' ', key = 'l' },
+              { action = 'LazyGit', desc = ' Lazy Git', icon = '󰒲 ', key = 'g' },
               { action = 'Mason', desc = ' Plugins', icon = ' ', key = 'c' },
               { action = 'qa', desc = ' Quit', icon = ' ', key = 'q' },
             },
@@ -47,11 +47,6 @@ return {
           },
         }
 
-        -- for _, button in ipairs(opts.config.center) do
-        --   button.desc = button.desc .. string.rep(' ', 43 - #button.desc)
-        --   button.key_format = '  %s'
-        -- end
-        --
         -- close Lazy and re-open when the dashboard is ready
         if vim.o.filetype == 'lazy' then
           vim.cmd.close()
