@@ -371,7 +371,12 @@ require('lazy').setup({
         --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
         --   },
         -- },
-        -- pickers = {}
+        pickers = {
+          find_files = {
+            hidden = true,
+            find_command = { 'fd', '--type', 'f', '--hidden', '--follow', '--exclude', '.git' },
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -601,6 +606,7 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
       })
+
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
@@ -642,6 +648,8 @@ require('lazy').setup({
         javascript = { { 'prettierd', 'prettier' } },
         typescript = { { 'prettierd', 'prettier', 'eslint' } },
         typescriptreact = { { 'prettierd', 'prettier', 'eslint' } },
+        json = { { 'prettierd', 'prettier', 'json' } },
+        markdown = { { 'markdownlint' } },
       },
     },
   },

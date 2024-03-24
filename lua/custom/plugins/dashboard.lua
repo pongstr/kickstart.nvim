@@ -2,6 +2,9 @@ return {
   {
     {
       'nvimdev/dashboard-nvim',
+      dependencies = {
+        { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      },
       event = 'VimEnter',
       opts = function()
         local logo = [[
@@ -20,13 +23,16 @@ return {
 
         local opts = {
           theme = 'doom',
-
           hide = {
             -- this is taken care of by lualine
             -- enabling this messes up the actual laststatus setting after loading a file
             statusline = false,
           },
           config = {
+            week_header = { enable = false },
+            disable_move = true,
+            project = { enable = false },
+            mru = { label = 'Recent Files', limit = 2, cwd_only = true },
             header = vim.split(logo, '\n'),
 
             center = {
@@ -35,7 +41,7 @@ return {
               { action = 'Telescope oldfiles', desc = ' Recent files', icon = ' ', key = 'r' },
               { action = 'Telescope live_grep', desc = ' Find text', icon = ' ', key = 'l' },
               { action = 'LazyGit', desc = ' Lazy Git', icon = '󰒲 ', key = 'g' },
-              { action = 'Mason', desc = ' Plugins', icon = ' ', key = 'c' },
+              { action = 'Mason', desc = ' Plugins', icon = ' ', key = 'p' },
               { action = 'qa', desc = ' Quit', icon = ' ', key = 'q' },
             },
 
