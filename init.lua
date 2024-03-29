@@ -376,7 +376,6 @@ require('lazy').setup({
         pickers = {
           find_files = {
             hidden = true,
-            find_command = { 'fd', '--type', 'f', '--hidden', '--follow' },
           },
         },
         extensions = {
