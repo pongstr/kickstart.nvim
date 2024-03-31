@@ -1,2 +1,1 @@
 # kickstart.nvim
-

@@ -35,30 +35,6 @@ return {
     },
   },
 
-  { -- Autoformat:
-    'elentok/format-on-save.nvim',
-    config = function()
-      local format_on_save = require 'format-on-save'
-      local formatters = require 'format-on-save.formatters'
-
-      format_on_save.setup {
-        exclude_path_patterns = {
-          '.git',
-          '__pycache__',
-          '/node_modules/',
-          '.local/share/nvim/lazy',
-        },
-        formatter_by_ft = {
-          css = formatters.lsp,
-          html = formatters.lsp,
-          python = formatters.black,
-          typescript = formatters.prettierd,
-          typescriptreact = formatters.prettierd,
-        },
-      }
-    end,
-  },
-
   { -- NeoTree: File explorer
     'nvim-neo-tree/neo-tree.nvim',
     branch = 'v3.x',
@@ -70,10 +46,18 @@ return {
     },
     config = function()
       require('neo-tree').setup {
+        popup_border_style = 'rounded',
         use_libuv_file_watcher = false,
-        hijack_netrw_behavior = 'disabled',
+        hijack_netrw_behavior = 'enable',
         window = {
           position = 'float',
+          mappings = {
+            ['P'] = { 'toggle_preview', config = { use_float = false, use_image_nvim = true } },
+          },
+        },
+        source_selector = {
+          winbar = false,
+          statusline = false,
         },
         filesystem = {
           filtered_items = {
@@ -85,6 +69,21 @@ return {
               '__pycache__',
             },
             never_show = { '.git' },
+          },
+        },
+        git_status = {
+          symbols = {
+            -- Change type
+            added = '\\udb81\\udc15', -- or "✚", but this is redundant info if you use git_status_colors on the name
+            modified = '', -- or "", but this is redundant info if you use git_status_colors on the name
+            deleted = '✖', -- this can only be used in the git_status source
+            renamed = '󰁕', -- this can only be used in the git_status source
+            -- Status type
+            untracked = '',
+            ignored = '',
+            unstaged = '󰄱',
+            staged = '',
+            conflict = '',
           },
         },
       }
@@ -115,6 +114,37 @@ return {
     'folke/noice.nvim',
     config = function()
       require('noice').setup {
+        views = {
+          cmdline_popup = {
+            position = {
+              row = 5,
+              col = '50%',
+            },
+            size = {
+              width = 60,
+              height = 'auto',
+            },
+          },
+          popupmenu = {
+            relative = 'editor',
+            position = {
+              row = 8,
+              col = '50%',
+            },
+            size = {
+              width = 60,
+              height = 10,
+            },
+            border = {
+              style = 'rounded',
+              padding = { 0, 1 },
+            },
+            win_options = {
+              winhighlight = { Normal = 'Normal', FloatBorder = 'DiagnosticInfo' },
+            },
+          },
+        },
+
         lsp = {
           -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
           override = {
@@ -137,38 +167,5 @@ return {
       'MunifTanjim/nui.nvim',
       -- 'rcarriga/nvim-notify',
     },
-  },
-
-  {
-    'ghillb/cybu.nvim',
-    branch = 'main', -- timely updates
-    -- branch = "v1.x", -- won't receive breaking changes
-    requires = { 'nvim-tree/nvim-web-devicons', 'nvim-lua/plenary.nvim' }, -- optional for icon support
-    config = function()
-      local ok, cybu = pcall(require, 'cybu')
-      if not ok then
-        return
-      end
-      cybu.setup {
-        position = {
-          relative_to = 'win', -- win, editor, cursor
-          anchor = 'topcenter', -- topleft, topcenter, topright,
-          -- centerleft, center, centerright,
-          -- bottomleft, bottomcenter, bottomright
-          vertical_offset = 10, -- vertical offset from anchor in lines
-          horizontal_offset = 0, -- vertical offset from anchor in columns
-          max_win_height = 5, -- height of cybu window in lines
-          max_win_width = 0.5, -- integer for absolute in columns
-          -- float for relative to win/editor width
-        },
-      }
-
-      vim.keymap.set('n', '<tab>', '<plug>(CybuLastusedNext)')
-      --
-      --   vim.keymap.set('n', 'T', '<Plug>(CybuPrev)')
-      --   vim.keymap.set('n', 'J', '<Plug>(CybuNext)')
-      --   vim.keymap.set({ 'n', 'v' }, '<c-s-tab>', '<plug>(CybuLastusedPrev)')
-      --   vim.keymap.set({ 'n', 'v' }, '<c-tab>', '<plug>(CybuLastusedNext)')
-    end,
   },
 }
