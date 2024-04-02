@@ -582,7 +582,9 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        tsserver = {},
+        tsserver = {
+          root_dir = require('lspconfig/util').root_pattern('package.json', 'tsconfig.json', 'jsconfig.json', '.git'),
+        },
         eslint = {
           on_attach = function(_, bufnr)
             vim.api.nvim_create_autocmd('BufWritePre', {
