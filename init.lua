@@ -628,6 +628,7 @@ require('lazy').setup({
         'eslint_d',
         'html-lsp',
         'isort',
+        'luadoc',
         'marksman',
         'markdownlint',
         'prettier',
