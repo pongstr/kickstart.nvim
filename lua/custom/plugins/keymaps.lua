@@ -22,6 +22,6 @@ vim.keymap.set('n', '<leader>wb', ':MoveWord(-1)<CR>', opts)
 -- Visual-mode commands
 vim.keymap.set('v', '<C-j>', ':MoveBlock(1)<CR>', opts)
 vim.keymap.set('v', '<C-k>', ':MoveBlock(-1)<CR>', opts)
-vim.keymap.set('n', '<C-a>', ':Dashboard<CR>', { silent = true })
+vim.keymap.set('n', '<C-a>', ':Dashboard<CR>', { desc = 'Show D[a]shboard', silent = true })
 
 return {}

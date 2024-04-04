@@ -133,7 +133,7 @@ vim.opt.updatetime = 250
 
 -- Decrease mapped sequence wait time
 -- Displays which-key popup sooner
-vim.opt.timeoutlen = 300
+vim.opt.timeoutlen = 50
 
 -- Configure how new splits should be opened
 vim.opt.splitright = true
@@ -374,7 +374,11 @@ require('lazy').setup({
             '__pycache__/',
           },
           mappings = {
-            i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+            i = {
+              ['<C-enter>'] = 'to_fuzzy_refine',
+              ['<C-j>'] = 'move_selection_next',
+              ['<C-k>'] = 'move_selection_previous',
+            },
           },
         },
         pickers = {
@@ -570,7 +574,7 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        -- pyright = {},
+        pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -674,6 +678,7 @@ require('lazy').setup({
         typescriptreact = { { 'prettierd', 'prettier', 'eslint' } },
         json = { { 'prettierd', 'prettier', 'json' } },
         markdown = { { 'markdownlint' } },
+        css = { { 'prettierd', 'prettier' } },
       },
     },
   },
