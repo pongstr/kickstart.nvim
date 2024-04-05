@@ -319,11 +319,12 @@ require('lazy').setup({
     branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
+
+      -- A telescope plugin that shows the Undo List
+      'debugloop/telescope-undo.nvim',
+
       { -- If encountering errors, see telescope-fzf-native README for installation instructions
         'nvim-telescope/telescope-fzf-native.nvim',
-
-        -- A telescope plugin that shows the Undo List
-        'debugloop/telescope-undo.nvim',
 
         -- `build` is used to run some command when the plugin is installed/updated.
         -- This is only run then, not every time Neovim starts up.
