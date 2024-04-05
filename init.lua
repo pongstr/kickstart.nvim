@@ -131,9 +131,12 @@ vim.opt.signcolumn = 'yes'
 -- Decrease update time
 vim.opt.updatetime = 250
 
+-- Don't wrap lines by default
+vim.opt.wrap = false
+
 -- Decrease mapped sequence wait time
 -- Displays which-key popup sooner
-vim.opt.timeoutlen = 300
+vim.opt.timeoutlen = 50
 
 -- Configure how new splits should be opened
 vim.opt.splitright = true
