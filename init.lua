@@ -102,7 +102,7 @@ vim.g.have_nerd_font = false
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -131,6 +131,9 @@ vim.opt.signcolumn = 'yes'
 -- Decrease update time
 vim.opt.updatetime = 250
 
+-- Don't wrap lines by default
+vim.opt.wrap = false
+
 -- Decrease mapped sequence wait time
 -- Displays which-key popup sooner
 vim.opt.timeoutlen = 50
@@ -153,9 +156,6 @@ vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
-
-vim.opt.wrap = false
-vim.opt.relativenumber = true
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -244,7 +244,6 @@ require('lazy').setup({
 
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
-  { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
@@ -264,11 +263,9 @@ require('lazy').setup({
     },
     config = function()
       require('gitsigns').setup()
-
       local map = function(key, cmd, opts)
         vim.keymap.set('n', key, cmd, opts)
       end
-
       map('<leader>gp', '<cmd>lua require"gitsigns".preview_hunk()<CR>', { desc = 'Gitsign: [P]review Hunk' })
       map('<leader>gB', '<cmd>lua require"gitsigns".toggle_current_line_blame(true)<CR>', { desc = 'Gitsign: [B]lame Line' })
       map('<leader>gR', '<cmd>lua require"gitsigns".reset_hunk()<CR>', { desc = 'Gitsign: [R]eset Hunk' })
@@ -322,7 +319,10 @@ require('lazy').setup({
     branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
+
+      -- A telescope plugin that shows the Undo List
       'debugloop/telescope-undo.nvim',
+
       { -- If encountering errors, see telescope-fzf-native README for installation instructions
         'nvim-telescope/telescope-fzf-native.nvim',
 
@@ -583,7 +583,7 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
         tsserver = {
-          root_dir = require('lspconfig/util').root_pattern('package.json', 'tsconfig.json', 'jsconfig.json', '.git'),
+          root_dir = require('lspconfig/util').root_pattern '.git',
         },
         eslint = {
           on_attach = function(_, bufnr)
@@ -593,6 +593,7 @@ require('lazy').setup({
             })
           end,
         },
+        --
 
         lua_ls = {
           -- cmd = {...},
@@ -621,23 +622,20 @@ require('lazy').setup({
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
-
       vim.list_extend(ensure_installed, {
         'black',
         'eslint',
         'eslint_d',
         'html-lsp',
         'isort',
-        'luadoc',
         'marksman',
         'markdownlint',
         'prettier',
         'prettierd',
-        'stylua',
+        'stylua', -- Used to format Lua code
         'tailwindcss-language-server', -- Used for Tailwind CSS
         'typescript-language-server', -- Used for TypeScript
       })
-
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
@@ -657,9 +655,10 @@ require('lazy').setup({
 
   { -- Autoformat
     'stevearc/conform.nvim',
+    lazy = false,
     keys = {
       {
-        '<leader>f',
+        '<leader>cf',
         function()
           require('conform').format { async = true, lsp_fallback = true }
         end,
@@ -681,17 +680,14 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
         python = { 'isort', 'black' },
-        --
-        -- You can use a sub-list to tell conform to run *until* a formatter
-        -- is found.
         javascript = { { 'prettierd', 'prettier' } },
         typescript = { { 'prettierd', 'prettier', 'eslint' } },
         typescriptreact = { { 'prettierd', 'prettier', 'eslint' } },
         json = { { 'prettierd', 'prettier', 'json' } },
         markdown = { { 'markdownlint' } },
         css = { { 'prettierd', 'prettier' } },
+        html = { { 'pretierd', 'prettier', 'html' } },
       },
     },
   },
@@ -831,12 +827,8 @@ require('lazy').setup({
     end,
   },
 
-  { -- Highlight todo, notes, etc in comments
-    'folke/todo-comments.nvim',
-    event = 'VimEnter',
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    opts = { signs = true },
-  },
+  -- Highlight todo, notes, etc in comments
+  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
@@ -935,21 +927,18 @@ require('lazy').setup({
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
     icons = vim.g.have_nerd_font and {} or {
       cmd = '⌘',
-      config = '',
-      event = '',
-      ft = '',
-      init = '',
-      keys = '',
-      plugin = '',
-      runtime = '',
-      require = '',
-      source = '',
-      start = '',
-      task = '',
-      lazy = ' ',
+      config = '🛠',
+      event = '📅',
+      ft = '📂',
+      init = '⚙',
+      keys = '🗝',
+      plugin = '🔌',
+      runtime = '💻',
+      require = '🌙',
+      source = '📄',
+      start = '🚀',
+      task = '📌',
+      lazy = '💤 ',
     },
   },
 })
-
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
