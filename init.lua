@@ -227,6 +227,8 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  'tpope/vim-fugitive',
+  'github/copilot.vim',
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
@@ -256,6 +258,17 @@ require('lazy').setup({
         changedelete = { text = '~' },
       },
     },
+    config = function()
+      require('gitsigns').setup()
+      local map = function(key, cmd, opts)
+        vim.keymap.set('n', key, cmd, opts)
+      end
+      map('<leader>gp', '<cmd>lua require"gitsigns".preview_hunk()<CR>', { desc = 'Gitsign: [P]review Hunk' })
+      map('<leader>gB', '<cmd>lua require"gitsigns".toggle_current_line_blame(true)<CR>', { desc = 'Gitsign: [B]lame Line' })
+      map('<leader>gR', '<cmd>lua require"gitsigns".reset_hunk()<CR>', { desc = 'Gitsign: [R]eset Hunk' })
+      map('<leader>gS', '<cmd>lua require"gitsigns".stage_buffer()<CR>', { desc = 'Gitsign: [S]tage Buffer' })
+      map('<leader>gx', '<cmd>lua require"gitsigns".reset_buffer_index()<CR>', { desc = 'Gitsign: Reset Buffer Inde[x]' })
+    end,
   },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
