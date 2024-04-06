@@ -370,6 +370,8 @@ require('lazy').setup({
         defaults = {
           file_ignore_patterns = {
             '.git/',
+            '.next/',
+            '.turbo/',
             'node_modules/',
             '__pycache__/',
           },
