@@ -588,6 +588,7 @@ require('lazy').setup({
           root_dir = require('lspconfig/util').root_pattern '.git',
         },
         eslint = {
+          root_dir = require('lspconfig/util').root_pattern('.eslintrc', '.eslintrc.js', '.eslintrc.cjs', '.eslintrc.yaml', '.eslintrc.yml', '.eslintrc.json'),
           on_attach = function(_, bufnr)
             vim.api.nvim_create_autocmd('BufWritePre', {
               buffer = bufnr,
