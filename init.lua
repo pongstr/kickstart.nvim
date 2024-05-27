@@ -245,35 +245,6 @@ require('lazy').setup({
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
 
-  -- Here is a more advanced example where we pass configuration
-  -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
-  --    require('gitsigns').setup({ ... })
-  --
-  -- See `:help gitsigns` to understand what the configuration keys do
-  { -- Adds git related signs to the gutter, as well as utilities for managing changes
-    'lewis6991/gitsigns.nvim',
-    opts = {
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
-    },
-    config = function()
-      require('gitsigns').setup()
-      local map = function(key, cmd, opts)
-        vim.keymap.set('n', key, cmd, opts)
-      end
-      map('<leader>gp', '<cmd>lua require"gitsigns".preview_hunk()<CR>', { desc = 'Gitsign: [P]review Hunk' })
-      map('<leader>gB', '<cmd>lua require"gitsigns".toggle_current_line_blame(true)<CR>', { desc = 'Gitsign: [B]lame Line' })
-      map('<leader>gR', '<cmd>lua require"gitsigns".reset_hunk()<CR>', { desc = 'Gitsign: [R]eset Hunk' })
-      map('<leader>gS', '<cmd>lua require"gitsigns".stage_buffer()<CR>', { desc = 'Gitsign: [S]tage Buffer' })
-      map('<leader>gx', '<cmd>lua require"gitsigns".reset_buffer_index()<CR>', { desc = 'Gitsign: Reset Buffer Inde[x]' })
-    end,
-  },
-
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
   -- This is often very useful to both group configuration, as well as handle
@@ -302,6 +273,7 @@ require('lazy').setup({
         ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
         ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
         ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
+        ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
       }
     end,
   },
@@ -459,7 +431,7 @@ require('lazy').setup({
       --
       -- LSP is an initialism you've probably heard, but might not understand what it is.
       --
-      -- LSP stands for Language Server Protocol. It's a protocol that helps editors
+      -- LSP stands for Language Server Protocol. It's a protocol that helps editorstelescope
       -- and language tooling communicate in a standardized fashion.
       --
       -- In general, you have a "server" which is some tool built to understand a particular
@@ -544,15 +516,37 @@ require('lazy').setup({
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
           if client and client.server_capabilities.documentHighlightProvider then
+            local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = true })
+
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
               buffer = event.buf,
+              group = highlight_augroup,
               callback = vim.lsp.buf.document_highlight,
             })
 
             vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
               buffer = event.buf,
+              group = highlight_augroup,
               callback = vim.lsp.buf.clear_references,
             })
+          end
+
+          vim.api.nvim_create_autocmd('LspDetach', {
+            group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
+            callback = function(event)
+              vim.lsp.buf.clear_references()
+              vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event.buf }
+            end,
+          })
+
+          -- The following autocommand is used to enable inlay hints in your
+          -- code, if the language server you are using supports them
+          --
+          -- This may be unwanted, since they displace some of your code
+          if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
+            map('<leader>th', function()
+              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+            end, '[T]oggle Inlay [H]ints')
           end
         end,
       })
@@ -889,6 +883,9 @@ require('lazy').setup({
     config = function(_, opts)
       -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
 
+      -- Prefer git instead of curl in order to improve connectivity in some environments
+      require('nvim-treesitter.install').prefer_git = true
+
       ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup(opts)
 
@@ -911,13 +908,17 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.gitsigns',
   require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.neotree',
+
   require 'custom.plugins.pongstr',
-  require 'custom.plugins.lualine',
   require 'custom.plugins.dashboard',
   require 'custom.plugins.keymaps',
 
+  --
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
