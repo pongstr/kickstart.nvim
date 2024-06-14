@@ -102,7 +102,7 @@ vim.g.have_nerd_font = true
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
-vim.opt.relativenumber = true
+-- vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -127,6 +127,9 @@ vim.opt.smartcase = true
 
 -- Keep signcolumn on by default
 vim.opt.signcolumn = 'yes'
+
+-- Don't wrap lines by default
+vim.opt.wrap = false
 
 -- Decrease update time
 vim.opt.updatetime = 250
@@ -227,6 +230,11 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+
+  -- NOTE:
+  -- at my current work, trpc cripples the shit out of tsserver autocomple
+  -- most of the time copilot suggestions are ironically faster
+  -- 'github/copilot.vim',
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
@@ -362,14 +370,17 @@ require('lazy').setup({
           },
           mappings = {
             i = {
-              ['<c-enter>'] = 'to_fuzzy_refine',
               ['<C-enter>'] = 'to_fuzzy_refine',
               ['<C-j>'] = 'move_selection_next',
               ['<C-k>'] = 'move_selection_previous',
             },
           },
         },
-        -- pickers = {}
+        pickers = {
+          find_files = {
+            hidden = true,
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -587,7 +598,7 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
         tsserver = {
-          root_dir = require('lspconfig/util').root_pattern '.git',
+          root_dir = require('lspconfig/util').root_pattern 'package.json',
         },
 
         eslint = {
@@ -599,7 +610,6 @@ require('lazy').setup({
             })
           end,
         },
-        --
 
         lua_ls = {
           -- cmd = {...},
@@ -630,9 +640,7 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'black',
-        'eslint-lsp',
-        'html-lsp',
-        'isort',
+        'eslint_d',
         'prettierd',
         'tailwindcss-language-server',
         'typescript-language-server',
@@ -683,13 +691,14 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         python = { 'isort', 'black' },
-        javascript = { { 'prettierd', 'eslint' } },
-        typescript = { { 'prettierd', 'eslint' } },
-        typescriptreact = { { 'prettierd', 'eslint' } },
+        javascript = { { 'prettierd' } },
+        typescript = { { 'prettierd', 'eslint_d' } },
+        typescriptreact = { { 'prettierd', 'eslint_d' } },
         json = { { 'prettierd', 'json' } },
         markdown = { { 'markdownlint' } },
         css = { { 'prettierd' } },
         html = { { 'pretierd' } },
+      },
     },
   },
 
@@ -812,6 +821,18 @@ require('lazy').setup({
     'folke/tokyonight.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
+      require('tokyonight').setup {
+        style = 'night',
+        transparent = true,
+        terminal_colors = true,
+        styles = {
+          comments = { italic = false },
+          keywords = { italic = false },
+          sidebars = 'transparent',
+          floats = 'transparent',
+        },
+      }
+
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
@@ -849,9 +870,6 @@ require('lazy').setup({
           find_left = 'sF', -- Find surrounding (to the left)
           highlight = 'sh', -- Highlight surrounding
           replace = 'sr', -- Replace surrounding
-          update_n_lines = 'sn', -- Update `n_lines`
-          suffix_last = 'l', -- Suffix to search with "prev" method
-          suffix_next = 'n', -- Suffix to search with "next" method
         },
       }
 
@@ -917,15 +935,15 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   require 'kickstart.plugins.debug',
-  require 'kickstart.plugins.autopairs',
-  require 'kickstart.plugins.gitsigns',
   require 'kickstart.plugins.indent_line',
-  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neotree',
+  require 'kickstart.plugins.gitsigns',
 
-  require 'custom.plugins.dashboard',
-  require 'custom.plugins.keymaps',
   require 'custom.plugins.pongstr',
+  require 'custom.plugins.keymaps',
+  require 'custom.plugins.lualine',
+  require 'custom.plugins.dashboard',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
@@ -954,6 +972,3 @@ require('lazy').setup({
     },
   },
 })
-
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
