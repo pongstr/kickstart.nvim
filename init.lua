@@ -600,7 +600,7 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        tsserver = {
+        ts_ls = {
           root_dir = require('lspconfig/util').root_pattern 'package.json',
         },
 
@@ -646,8 +646,8 @@ require('lazy').setup({
         'ruff',
         'ruff_lsp',
         'prettierd',
-        'tailwindcss-language-server',
-        'typescript-language-server',
+        'tailwindcss',
+        'ts_ls',
         'stylua', -- Used to format Lua code
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
