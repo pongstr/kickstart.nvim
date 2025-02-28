@@ -579,6 +579,7 @@ require('lazy').setup({
       --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
+      capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
 
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
@@ -604,15 +605,17 @@ require('lazy').setup({
           root_dir = require('lspconfig/util').root_pattern 'package.json',
         },
 
-        eslint = {
-          root_dir = require('lspconfig/util').root_pattern('.eslintrc', '.eslintrc.js', '.eslintrc.cjs', '.eslintrc.yaml', '.eslintrc.yml', '.eslintrc.json'),
-          on_attach = function(_, bufnr)
-            vim.api.nvim_create_autocmd('BufWritePre', {
-              buffer = bufnr,
-              command = 'EslintFixAll',
-            })
-          end,
-        },
+        -- eslint = {
+        --   root_dir = require('lspconfig/util').root_pattern('.eslintrc', '.eslintrc.js', '.eslintrc.cjs', '.eslintrc.yaml', '.eslintrc.yml', '.eslintrc.json'),
+        --   on_attach = function(_, bufnr)
+        --     vim.api.nvim_create_autocmd('BufWritePre', {
+        --       buffer = bufnr,
+        --       command = 'EslintFixAll',
+        --     })
+        --   end,
+        -- },
+
+        biome = {},
 
         lua_ls = {
           -- cmd = {...},
@@ -642,17 +645,19 @@ require('lazy').setup({
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
+        'biome',
         'eslint_d',
         'ruff',
-        'ruff_lsp',
         'prettierd',
         'tailwindcss',
         'ts_ls',
-        'stylua', -- Used to format Lua code
+        'stylua',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
+        ensure_installed = {},
+        automatic_installation = true,
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
@@ -701,11 +706,16 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        python = { 'ruff', 'isort' },
+        python = {
+          'isort',
+          'ruff',
+          'ruff_fix',
+          'ruff_format',
+        },
         javascript = { 'prettierd', stop_after_first = true },
-        typescript = { 'prettierd', 'eslint_d' },
-        typescriptreact = { 'prettierd', 'eslint_d' },
-        json = { 'prettierd', 'json' },
+        typescript = { 'prettierd', 'eslint_d', lsp_format = 'biome' },
+        typescriptreact = { 'prettierd', 'eslint_d', lsp_format = 'biome' },
+        json = { 'prettierd' },
         markdown = { 'markdownlint' },
         html = { 'prettierd' },
       },
@@ -836,6 +846,7 @@ require('lazy').setup({
     'folke/tokyonight.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
+      ---@diagnostic disable-next-line: missing-fields
       require('tokyonight').setup {
         style = 'night',
         transparent = true,
@@ -889,7 +900,7 @@ require('lazy').setup({
 
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
-      -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
+      -- - saiw) - [S]urround [A] add [I] Inner [W] Word [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup {
@@ -974,6 +985,7 @@ require('lazy').setup({
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   -- { import = 'custom.plugins' },
 }, {
+
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table

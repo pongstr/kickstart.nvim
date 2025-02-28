@@ -88,15 +88,16 @@ return {
       -- 'rcarriga/nvim-notify',
     },
   },
-
-  -- {
-  --   '3rd/image.nvim',
-  --   config = function()
-  --     -- default config
-  --     require('image').setup {
-  --       backend = 'kitty',
-  --       hijack_file_patterns = { '*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.avif' }, -- render image files as images when opened
-  --     }
-  --   end,
-  -- },
+  {
+    'davidmh/mdx.nvim',
+    config = true,
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+  },
+  {
+    '3rd/image.nvim',
+    opts = {},
+  },
+  rocks = {
+    hererocks = true, -- recommended if you do not have global installation of Lua 5.1.
+  },
 }

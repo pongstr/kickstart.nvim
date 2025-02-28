@@ -2,26 +2,6 @@
 -- https://github.com/nvim-neo-tree/neo-tree.nvim
 
 return {
-  {
-    'vhyrro/luarocks.nvim',
-    priority = 1000, -- this plugin needs to run before anything else
-    config = true,
-    opts = {
-      rocks = { 'magick' },
-    },
-  },
-  {
-    '3rd/image.nvim',
-    dependencies = { 'luarocks.nvim' },
-    config = function()
-      -- default config
-      require('image').setup {
-        backend = 'kitty',
-        hijack_file_patterns = { '*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.avif' }, -- render image files as images when opened
-      }
-    end,
-  },
-
   { -- NeoTree: File explorer
     'nvim-neo-tree/neo-tree.nvim',
     branch = 'v3.x',
@@ -29,7 +9,6 @@ return {
       'nvim-lua/plenary.nvim',
       'nvim-tree/nvim-web-devicons',
       'MunifTanjim/nui.nvim',
-      '3rd/image.nvim',
     },
     config = function()
       require('neo-tree').setup {
@@ -84,10 +63,6 @@ return {
       map('<leader>fe', function()
         tree.execute { toggle = true }
       end, { desc = 'Explorer NeoTree (root dir)' })
-
-      map('<leader>fE', function()
-        tree.execute { toggle = true, dir = vim.loop.cwd() }
-      end, { desc = 'Explorer NeoTree (cwd)' })
 
       map('<leader>be', function()
         tree.execute { source = 'buffers', toggle = true }
