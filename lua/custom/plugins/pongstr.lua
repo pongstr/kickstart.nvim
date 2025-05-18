@@ -85,14 +85,16 @@ return {
     end,
     dependencies = {
       'MunifTanjim/nui.nvim',
-      -- 'rcarriga/nvim-notify',
+      'rcarriga/nvim-notify',
     },
   },
+
   {
     'davidmh/mdx.nvim',
     config = true,
     dependencies = { 'nvim-treesitter/nvim-treesitter' },
   },
+
   {
     '3rd/image.nvim',
     opts = {},
