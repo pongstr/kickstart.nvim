@@ -581,9 +581,10 @@ require('lazy').setup({
           ---@param bufnr? integer some lsp support methods only in specific files
           ---@return boolean
           local function client_supports_method(client, method, bufnr)
-            if vim.fn.has 'nvim-0.11' == 1 then
+            if vim.fn.has 'nvim-0.11.1' == 1 then
               return client:supports_method(method, bufnr)
             else
+              ---@diagnostic disable-next-line
               return client.supports_method(method, { bufnr = bufnr })
             end
           end
@@ -732,7 +733,7 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'biome',
-        'eslint_d',
+        'eslint-lsp',
         'ruff',
         'prettierd',
         'svelte',
@@ -797,13 +798,13 @@ require('lazy').setup({
           'ruff_fix',
           'ruff_format',
         },
-        javascript = { 'prettierd', stop_after_first = true },
-        typescript = { 'prettierd', 'eslint_d', lsp_format = 'biome' },
-        typescriptreact = { 'prettierd', 'eslint_d', lsp_format = 'biome' },
+        javascript = { 'prettierd', 'eslint-lsp', stop_after_first = true },
+        typescript = { 'prettierd', 'eslint-lsp' },
+        typescriptreact = { 'prettierd', 'eslint-lsp' },
         json = { 'prettierd' },
         markdown = { 'markdownlint' },
         html = { 'prettierd' },
-        svelte = { lsp_format = 'svelte' },
+        svelte = { 'svelte', 'prettierd', 'eslint-lsp' },
         lua = { 'stylua' },
       },
     },
@@ -871,6 +872,15 @@ require('lazy').setup({
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
+
+        ['<Tab>'] = { 'select_next', 'fallback' },
+        ['<S-Tab>'] = { 'select_prev', 'fallback' },
+        ['<C-space>'] = {
+          function(cmp)
+            cmp.show { providers = { 'snippets' } }
+          end,
+        },
+        ['<C-CR>'] = { 'select_and_accept' },
       },
 
       appearance = {
@@ -973,7 +983,19 @@ require('lazy').setup({
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
+      require('mini.surround').setup {
+        mappings = {
+          add = 'sa', -- Add surrounding in Normal and Visual modes
+          delete = 'sw', -- Delete surrounding
+          find = 'sf', -- Find surrounding (to the right)
+          find_left = 'sF', -- Find surrounding (to the left)
+          highlight = 'sh', -- Highlight surrounding
+          replace = 'sr', -- Replace surrounding
+        },
+      }
+
+      require('mini.pairs').setup()
+      require('mini.bracketed').setup()
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
@@ -1031,9 +1053,9 @@ require('lazy').setup({
 
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.neo-tree',
+  -- require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.debug',
   require 'kickstart.plugins.lint',
-  require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- require 'custom.plugins.dashboard',
@@ -1041,6 +1063,7 @@ require('lazy').setup({
   -- require 'custom.plugins.indent_line',
   -- require 'custom.plugins.neo-tree',
   -- require 'custom.plugins.keymaps',
+  -- require 'custom.plugins.autopairs',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
