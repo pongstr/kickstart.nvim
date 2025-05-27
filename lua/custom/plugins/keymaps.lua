@@ -6,7 +6,7 @@ vim.api.nvim_set_keymap('n', '<leader>ln', ':set relativenumber!<CR>', { noremap
 vim.keymap.set('n', '<leader>u', ':Telescope undo<CR>', { desc = '[U]ndo List' })
 
 -- Show LazyGit
-vim.keymap.set('n', '<leader>gg', ':LazyGit<CR>', { desc = 'Lazy[g]it: Show Window' })
+vim.keymap.set('n', '<leader>lg', ':LazyGit<CR>', { desc = 'Lazy[g]it: Show Window' })
 
 -- Move Plugin: 'fedepujol/move.nvim'
 -- commands for moving lines or blocks horizontally doesn't work
