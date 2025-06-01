@@ -96,7 +96,7 @@ return {
   -- the highlighting.
   {
     'echasnovski/mini.indentscope',
-    version = '0.15.0',
+    version = '0.16.0',
     opts = {
       symbol = '│',
       options = { try_as_border = true },

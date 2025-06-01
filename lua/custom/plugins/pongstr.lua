@@ -33,11 +33,15 @@ return {
     'folke/noice.nvim',
     config = function()
       require('noice').setup {
+        timeout = 5000,
+        on_open = function(win)
+          vim.api.nvim_win_set_config(win, { focusable = false })
+        end,
         views = {
           cmdline_popup = {
             position = {
               row = 5,
-              col = '50%',
+              col = '30%',
             },
             size = {
               width = 60,
@@ -48,7 +52,7 @@ return {
             relative = 'editor',
             position = {
               row = 8,
-              col = '50%',
+              col = '30%',
             },
             size = {
               width = 60,
@@ -78,8 +82,8 @@ return {
           bottom_search = true, -- use a classic bottom cmdline for search
           command_palette = true, -- position the cmdline and popupmenu together
           long_message_to_split = true, -- long messages will be sent to a split
-          inc_rename = false, -- enables an input dialog for inc-rename.nvim
-          lsp_doc_border = false, -- add a border to hover docs and signature help
+          inc_rename = true, -- enables an input dialog for inc-rename.nvim
+          lsp_doc_border = true, -- add a border to hover docs and signature help
         },
       }
     end,
