@@ -16,9 +16,10 @@ return {
           theme = 'auto',
           globalstatus = true,
           disabled_filetypes = { statusline = { 'dashboard', 'alpha', 'starter' } },
+          section_separators = { left = '', right = '' },
         },
         sections = {
-          lualine_a = { 'mode' },
+          lualine_a = { { 'mode', separator = { left = '' }, right_padding = 2 } },
           lualine_b = { 'branch' },
           lualine_c = {
             'filename',
@@ -54,9 +55,12 @@ return {
             { 'location', padding = { left = 0, right = 1 } },
           },
           lualine_z = {
-            function()
-              return ' ' .. os.date '%R 👾'
-            end,
+            {
+              function()
+                return ' ' .. os.date '%R'
+              end,
+              separator = { right = '' },
+            },
           },
         },
       }
