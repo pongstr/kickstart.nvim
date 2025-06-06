@@ -173,6 +173,10 @@ vim.o.scrolloff = 10
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
+vim.g.markdown_fenced_languages = {
+  'ts=typescript',
+}
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -631,6 +635,17 @@ require('lazy').setup({
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
             end, '[T]oggle Inlay [H]ints')
           end
+
+          local is_node_project = vim.fn.filereadable 'package.json' == 1
+          local is_deno_project = vim.fn.filereadable 'deno.json' == 1
+
+          if client and client.name == 'denols' and is_node_project then
+            client.stop(client)
+          end
+
+          if client and client.name == 'ts_ls' and is_deno_project then
+            client.stop(client)
+          end
         end,
       })
 
@@ -678,6 +693,7 @@ require('lazy').setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+      local util = require('lspconfig').util
       local servers = {
         -- clangd = {},
         -- gopls = {},
@@ -687,28 +703,27 @@ require('lazy').setup({
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
         --    https://github.com/pmizio/typescript-tools.nvim
-        --
-        -- But for many setups, the LSP (`ts_ls`) will work just fine
         ts_ls = {
-          root_dir = require('lspconfig/util').root_pattern 'package.json',
+          root_dir = require('lspconfig').util.root_pattern { 'package.json', 'tsconfig.json' },
+          single_file_support = false,
+          settings = {},
+        },
+
+        denols = {
+          root_dir = require('lspconfig').util.root_pattern { 'deno.json', 'deno.jsonc' },
+          single_file_support = false,
+          settings = {},
         },
 
         eslint = {
           root_dir = require('lspconfig/util').root_pattern('.eslintrc', '.eslintrc.js', '.eslintrc.cjs', '.eslintrc.yaml', '.eslintrc.yml', '.eslintrc.json'),
-          on_attach = function(_, bufnr)
-            vim.api.nvim_create_autocmd('BufWritePre', {
-              buffer = bufnr,
-              command = 'EslintFixAll',
-            })
-          end,
+          single_file_support = false,
         },
 
         svelte = {},
 
         lua_ls = {
-          -- cmd = { ... },
-          -- filetypes = { ... },
-          -- capabilities = {},
+          enabled = true,
           settings = {
             Lua = {
               completion = {
@@ -737,20 +752,21 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'biome',
+        'deno',
         'eslint-lsp',
         'ruff',
         'prettierd',
         'svelte',
+        'stylua',
         'tailwindcss',
         'ts_ls',
-        'stylua', -- Used to format Lua code
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
         ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
         automatic_enable = true,
-        automatic_installation = true,
+        automatic_installation = false,
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
@@ -780,7 +796,7 @@ require('lazy').setup({
       },
     },
     opts = {
-      notify_on_error = false,
+      notify_on_error = true,
       format_on_save = function(bufnr)
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
@@ -801,7 +817,7 @@ require('lazy').setup({
         json = { 'prettierd' },
         jsonc = { 'prettierd' },
         lua = { 'stylua' },
-        markdown = { 'markdownlint' },
+        markdown = { 'mdformat' },
         javascript = { 'prettierd', 'eslint-lsp' },
         typescript = { 'prettierd', 'eslint-lsp', 'ts_ls' },
         typescriptreact = { 'prettierd', 'eslint-lsp' },
@@ -850,7 +866,8 @@ require('lazy').setup({
       'folke/lazydev.nvim',
     },
     --- @module 'blink.cmp'
-    --- @type blink.cmp.Config
+    -- --- @type blink.cmp.Config
+    ---@diagnostic disable-next-line missing-fields
     opts = {
       keymap = {
         -- 'default' (recommended) for mappings similar to built-in completions
