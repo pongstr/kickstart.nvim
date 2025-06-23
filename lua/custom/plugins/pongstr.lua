@@ -6,6 +6,20 @@
 
 return {
   {
+    'vhyrro/luarocks.nvim',
+    priority = 1001, -- this plugin needs to run before anything else
+    config = true,
+    opts = {
+      rocks = { 'magick' },
+    },
+  },
+  {
+    '3rd/image.nvim',
+    dependencies = { 'luarocks.nvim' },
+    opts = {},
+  },
+
+  {
     'fedepujol/move.nvim',
     opts = {},
     config = function()
@@ -33,7 +47,7 @@ return {
     'folke/noice.nvim',
     config = function()
       require('noice').setup {
-        timeout = 5000,
+        timeout = 1000,
         on_open = function(win)
           vim.api.nvim_win_set_config(win, { focusable = false })
         end,
@@ -97,10 +111,5 @@ return {
     'davidmh/mdx.nvim',
     config = true,
     dependencies = { 'nvim-treesitter/nvim-treesitter' },
-  },
-
-  {
-    '3rd/image.nvim',
-    opts = {},
   },
 }

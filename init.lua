@@ -720,8 +720,6 @@ require('lazy').setup({
           single_file_support = false,
         },
 
-        svelte = {},
-
         lua_ls = {
           enabled = true,
           settings = {
@@ -751,9 +749,10 @@ require('lazy').setup({
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'biome',
+        -- 'biome',
         'deno',
         'eslint-lsp',
+        'mdformat',
         'ruff',
         'prettierd',
         'svelte',
@@ -818,16 +817,16 @@ require('lazy').setup({
         jsonc = { 'prettierd' },
         lua = { 'stylua' },
         markdown = { 'mdformat' },
-        javascript = { 'prettierd', 'eslint-lsp' },
-        typescript = { 'prettierd', 'eslint-lsp', 'ts_ls' },
-        typescriptreact = { 'prettierd', 'eslint-lsp' },
+        javascript = { 'prettierd', 'eslint' },
+        typescript = { 'prettierd', 'eslint' },
+        typescriptreact = { 'prettierd', 'eslint' },
         python = {
           'isort',
           'ruff',
           'ruff_fix',
           'ruff_format',
         },
-        svelte = { 'prettierd', 'eslint-lsp', 'svelte' },
+        svelte = { 'prettierd', 'eslint', 'svelte' },
       },
     },
   },
@@ -835,7 +834,7 @@ require('lazy').setup({
   { -- Autocompletion
     'saghen/blink.cmp',
     event = 'VimEnter',
-    version = '1.*',
+    version = '1.4.*',
     dependencies = {
       -- Snippet Engine
       {
