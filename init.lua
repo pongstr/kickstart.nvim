@@ -195,6 +195,10 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
+-- Fold blocks manually
+vim.o.foldmethod = 'manual'
+vim.o.foldcolumn = '1'
+
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
 -- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
@@ -753,6 +757,7 @@ require('lazy').setup({
         'deno',
         'eslint-lsp',
         'mdformat',
+        'markdownlint',
         'ruff',
         'prettierd',
         'svelte',
@@ -816,7 +821,7 @@ require('lazy').setup({
         json = { 'prettier' },
         jsonc = { 'prettier' },
         lua = { 'stylua' },
-        markdown = { 'mdformat' },
+        markdown = { 'mdformat', 'markdownlint' },
         javascript = { 'prettier', 'eslint' },
         typescript = { 'prettier', 'eslint' },
         typescriptreact = { 'prettier', 'eslint' },
@@ -835,6 +840,7 @@ require('lazy').setup({
     'saghen/blink.cmp',
     event = 'VimEnter',
     version = '1.4.*',
+    build = 'cargo build --release',
     dependencies = {
       -- Snippet Engine
       {

@@ -6,24 +6,48 @@
 
 return {
   {
-    'vhyrro/luarocks.nvim',
-    priority = 1001, -- this plugin needs to run before anything else
-    config = true,
-    opts = {
-      rocks = { 'magick' },
+    'christoomey/vim-tmux-navigator',
+    cmd = {
+      'TmuxNavigateLeft',
+      'TmuxNavigateDown',
+      'TmuxNavigateUp',
+      'TmuxNavigateRight',
+      'TmuxNavigatePrevious',
+      'TmuxNavigatorProcessList',
     },
-  },
-  {
-    '3rd/image.nvim',
-    dependencies = { 'luarocks.nvim' },
-    opts = {},
+    keys = {
+      { '<M-h>', '<cmd><C-U>TmuxNavigateLeft<cr>' },
+      { '<M-j>', '<cmd><C-U>TmuxNavigateDown<cr>' },
+      { '<M-k>', '<cmd><C-U>TmuxNavigateUp<cr>' },
+      { '<M-l>', '<cmd><C-U>TmuxNavigateRight<cr>' },
+      { '<M-\\>', '<cmd><C-U>TmuxNavigatePrevious<cr>' },
+    },
   },
 
   {
     'fedepujol/move.nvim',
     opts = {},
     config = function()
-      require('move').setup()
+      local opts = { noremap = true, silent = true }
+
+      require('move').setup {
+        word = { enable = true },
+        char = { enable = true },
+      }
+
+      -- plugin repo: https://github.com/fedepujol/move.nvim
+      -- Normal-mode
+      vim.keymap.set('n', '<C-j>', ':MoveLine(1)<CR>', opts)
+      vim.keymap.set('n', '<C-k>', ':MoveLine(-1)<CR>', opts)
+
+      vim.keymap.set('n', '<leader>wf', ':MoveWord(1)<CR>', opts)
+      vim.keymap.set('n', '<leader>wb', ':MoveWord(-1)<CR>', opts)
+
+      -- Visual-mode
+      vim.keymap.set('v', '<C-j>', ':MoveBlock(1)<CR>', opts)
+      vim.keymap.set('v', '<C-k>', ':MoveBlock(-1)<CR>', opts)
+      vim.keymap.set('v', '<C-h>', ':MoveHBlock(-1)<CR>', opts)
+      vim.keymap.set('v', '<C-l>', ':MoveHBlock(1)<CR>', opts)
     end,
   },
 
@@ -40,6 +64,17 @@ return {
     dependencies = {
       'nvim-telescope/telescope.nvim',
       'nvim-lua/plenary.nvim',
+    },
+  },
+
+  {
+    'rcarriga/nvim-notify',
+    opts = {
+      timeout = 2000,
+      render = 'compact',
+      stages = 'fade',
+      level = 3,
+      top_down = false,
     },
   },
 
