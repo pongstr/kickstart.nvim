@@ -10,8 +10,8 @@ return {
     },
   },
   {
-    '3rd/image.nvim',
-    -- NOTE:
+    'pongstr/image.nvim',
+    -- NOTE: temporarily use the fork
     -- as of `4c51d62` image preview is borked and has two related PRs, just patch this file for now:
     -- ~/.local/share/nvim/lazy/image.nvim/lua/image/renderer.lua (replace the lines with)
     -- L-107: local is_folded = vim.fn.foldclosed(original_y + 1) ~= -1
@@ -30,7 +30,7 @@ return {
       'nvim-lua/plenary.nvim',
       'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
       'MunifTanjim/nui.nvim',
-      { '3rd/image.nvim', opts = { enable = true, backend = 'kitty' } },
+      { 'pongstr/image.nvim', opts = { enable = true, backend = 'kitty' } },
     },
     lazy = false,
     keys = {
