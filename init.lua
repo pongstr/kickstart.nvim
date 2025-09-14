@@ -173,6 +173,11 @@ vim.o.scrolloff = 10
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
+-- Preferred tab size
+vim.o.tabstop = 2
+vim.o.shiftwidth = 2
+vim.o.softtabstop = 2
+
 vim.g.markdown_fenced_languages = {
   'ts=typescript',
 }
@@ -381,7 +386,6 @@ require('lazy').setup({
       { -- If encountering errors, see telescope-fzf-native README for installation instructions
         'nvim-telescope/telescope-fzf-native.nvim',
 
-        -- `build` is used to run some command when the plugin is installed/updated.
         -- This is only run then, not every time Neovim starts up.
         build = 'make',
 
@@ -498,7 +502,7 @@ require('lazy').setup({
       -- Mason must be loaded before its dependents so we need to set it up here.
       -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
       { 'mason-org/mason.nvim', opts = {} },
-      'mason-org/mason-lspconfig.nvim',
+      { 'mason-org/mason-lspconfig.nvim' },
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
@@ -711,6 +715,19 @@ require('lazy').setup({
         -- ts_ls = {},
         --
 
+        svelte = {
+          -- Capabilities and on_attach are inherited from kickstart’s lsp setup
+          on_attach = function(client, _)
+            -- Example: restart TS/JS LSPs when a file changes (useful for Svelte)
+            vim.api.nvim_create_autocmd('BufWritePost', {
+              pattern = { '*.ts', '*.svelte', '*.svelte.ts' },
+              callback = function(ctx)
+                client.notify('$/onDidChangeTsOrJsFile', { uri = ctx.match })
+              end,
+            })
+          end,
+        },
+
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
@@ -742,12 +759,14 @@ require('lazy').setup({
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'deno',
+        -- 'deno',
+        -- 'markdownlint',
+        'eslint_d',
         'eslint-lsp',
         'mdformat',
-        'markdownlint',
-        'ruff',
+        'prettier',
         'prettierd',
+        'ruff',
         'svelte',
         'stylua',
         'tailwindcss',
@@ -797,7 +816,7 @@ require('lazy').setup({
           return nil
         else
           return {
-            timeout_ms = 500,
+            timeout_ms = 1500,
             lsp_format = 'fallback',
           }
         end
@@ -808,7 +827,9 @@ require('lazy').setup({
         -- python = { "isort", "black" },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        svelte = { 'prettierd', 'prettier' },
       },
     },
   },
@@ -949,7 +970,7 @@ require('lazy').setup({
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
   { -- Collection of various small independent plugins/modules
-    'echasnovski/mini.nvim',
+    'nvim-mini/mini.nvim',
     config = function()
       -- Better Around/Inside textobjects
       --
@@ -1020,9 +1041,9 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.autopairs',
+  -- require 'kickstart.plugins.autopairs',   -- autopairs in:
+  -- require 'kickstart.plugins.indent_line', -- indent_line in:
   require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.debug',
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps

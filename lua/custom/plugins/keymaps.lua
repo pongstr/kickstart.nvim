@@ -11,4 +11,9 @@ vim.keymap.set('n', '<leader>hg', ':LazyGit<CR>', { desc = 'Lazy[g]it: Show Wind
 -- Visual-mode commands
 vim.keymap.set('n', '<C-a>', ':Dashboard<CR>', { desc = 'Show D[a]shboard', silent = true })
 
+vim.keymap.set('v', '<Tab>', '>gv', { noremap = true, silent = true })
+vim.keymap.set('v', '<S-Tab>', '<gv', { noremap = true, silent = true })
+vim.keymap.set('n', '<Tab>', '>>', { noremap = true, silent = true })
+vim.keymap.set('n', '<S-Tab>', '<<', { noremap = true, silent = true })
+
 return {}

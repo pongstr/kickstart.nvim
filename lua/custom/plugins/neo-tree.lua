@@ -41,7 +41,7 @@ return {
       use_libuv_file_watcher = false,
       hijack_netrw_behavior = 'enable',
       window = {
-        position = 'float',
+        position = 'left',
         mappings = {
           ['P'] = { 'toggle_preview', config = { use_float = true, use_image_nvim = true } },
           ['\\'] = { 'close_window' },
