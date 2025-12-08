@@ -274,7 +274,6 @@ return {
           --
           awk_ls = {},
           bashls = {},
-          clangd = {},
           docker_compose_language_service = {},
           dockerls = {},
           eslint = {},
@@ -282,14 +281,6 @@ return {
           graphql = {},
           html = {},
           jsonls = {},
-          ltex_plus = {
-            filetypes = ltex_plus_filetypes,
-            settings = {
-              ltex = {
-                enabled = ltex_plus_filetypes,
-              },
-            },
-          }, -- LaTeX, Markdown, etc. LSP
 
           lua_ls = {
             -- cmd = { ... },
@@ -306,9 +297,7 @@ return {
             },
           },
 
-          sqls = {}, -- See also the confusingly similarly named sqlls, and sqruff
           svelte = {},
-          terraformls = {}, -- This is the official hashicorp one, see also terraform_lsp
           tailwindcss = {},
           typos_lsp = {}, -- Code spellchecker
 
@@ -317,7 +306,6 @@ return {
           --
           -- But for many setups, the LSP (`ts_ls`) will work just fine
           ts_ls = {}, -- see also ts_query_ls, tsgo
-
           vacuum = {}, -- OpenAPI/Swagger linter/analyzer, requires filetypes to be registered
           vimls = {}, -- Vimscript
           yamlls = {},

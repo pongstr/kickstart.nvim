@@ -15,6 +15,9 @@ vim.o.mouse = 'a'
 -- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
 
+-- Don't wrap lines by default
+vim.opt.wrap = false
+
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
@@ -82,5 +85,7 @@ vim.o.shiftwidth = 4 -- When auto-indent is on, use four spaces
 vim.o.smarttab = true -- Switch between indent and tab, depending on location
 
 vim.o.hi = 150 -- command history is 150 long
+
+vim.opt.swapfile = false
 
 -- vim.opt.shortmess:remove { 'S' } -- Enable display of position and count of search results -- This is handled by the kickstart status line but I'm leaving this in as a reference for how to remove options
