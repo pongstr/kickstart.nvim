@@ -24,7 +24,7 @@ return {
           return nil
         else
           return {
-            timeout_ms = 500,
+            timeout_ms = 1000,
             lsp_format = 'fallback',
           }
         end
@@ -35,8 +35,9 @@ return {
         -- python = { "isort", "black" },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        javascript = { 'prettierd', 'prettier', stop_after_first = true },
-        typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        javascript = { 'eslint', 'prettierd', 'stop_after_first' },
+        typescript = { 'eslint', 'prettierd', 'stop_after_first' },
+        svelte = { 'eslint', 'prettierd' },
       },
     },
   },
