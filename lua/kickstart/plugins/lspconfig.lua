@@ -177,13 +177,14 @@ return {
     local ensure_installed = vim.tbl_keys(servers or {})
     vim.list_extend(ensure_installed, {
       -- You can add other tools here that you want Mason to install
+      'stylua',
       'svelte',
       'ts_ls',
       'tailwindcss',
     })
 
     require('mason-tool-installer').setup {
-      auto_install = true,
+      automatic_installation = true,
       ensure_installed = ensure_installed,
       highlight = { enable = true },
       indent = { enable = true },
